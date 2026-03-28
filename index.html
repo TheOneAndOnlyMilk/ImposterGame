@@ -14,6 +14,8 @@ button { padding:15px 20px; font-size:18px; border:none; border-radius:10px; mar
 .reveal-box { background:#222; border-radius:15px; padding:40px; font-size:28px; width:80%; max-width:400px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 select { padding:12px 15px; font-size:18px; border-radius:10px; min-width:200px; background:#222; color:white; }
 option { background:#222; color:white; }
+.checkbox-container { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:10px; }
+.checkbox-container label { display:flex; align-items:center; gap:5px; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -22,6 +24,7 @@ option { background:#222; color:white; }
 <h1>Impostor Game</h1>
 <select id="players"></select><br><br>
 <select id="impostors"></select><br><br>
+<div class="checkbox-container" id="categories"></div>
 <button onclick="startGame()">Start Game</button>
 </div>
 
@@ -52,12 +55,23 @@ let players = [];
 let word = "";
 let currentPlayerIndex = null;
 let hasRevealed = false;
+const categoryFiles = {
+    'Animals': 'animals.txt',
+    'Foods': 'foods.txt',
+    'Objects': 'objects.txt'
+};
 
 async function fetchWord() {
-    const res = await fetch('words.txt');
+    const selectedCategories = Array.from(document.querySelectorAll('#categories input[type=checkbox]:checked'))
+        .map(cb => categoryFiles[cb.value]);
+
+    if(selectedCategories.length === 0) selectedCategories.push('words.txt');
+
+    const chosenFile = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
+    const res = await fetch(chosenFile);
     const text = await res.text();
     const words = text.split('\n').filter(w => w.trim() !== "");
-    return words[Math.floor(Math.random()*words.length)];
+    return words[Math.floor(Math.random() * words.length)];
 }
 
 async function startGame() {
@@ -65,10 +79,9 @@ async function startGame() {
     impostorCount = parseInt(document.getElementById('impostors').value);
 
     revealed = Array(totalPlayers).fill(false);
-    word = await fetchWord(); // Await here so it's a string
+    word = await fetchWord();
 
     players = Array(totalPlayers).fill("normal");
-
     let chosen = new Set();
     while(chosen.size < impostorCount) {
         chosen.add(Math.floor(Math.random()*totalPlayers));
@@ -156,6 +169,18 @@ function initDropdowns() {
             const opt = new Option(i + ' Impostor' + (i>1?'s':''), i);
             impostorSelect.add(opt);
         }
+    });
+
+    // Setup category checkboxes
+    const catContainer = document.getElementById('categories');
+    Object.keys(categoryFiles).forEach(cat => {
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = cat;
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(cat));
+        catContainer.appendChild(label);
     });
 }
 
