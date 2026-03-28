@@ -40,34 +40,22 @@ button {
     padding:15px 20px;
     font-size:18px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     margin-top:20px;
     cursor:pointer;
-    background: #4caf50;
+    background: linear-gradient(135deg,#4caf50,#81c784);
     color:white;
     font-weight:bold;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
-button:hover {
-    background:#45a049;
-}
-select {
-    padding:12px 15px;
-    font-size:18px;
-    border-radius:10px;
-    min-width:200px;
-    background:#222;
-    color:white;
-}
-option {
-    background:#222;
-    color:white;
-}
+button:hover { background: linear-gradient(135deg,#45a049,#66bb6a); transform: translateY(-2px); }
+select { padding:12px 15px; font-size:18px; border-radius:10px; min-width:200px; background:#222; color:white; }
+option { background:#222; color:white; }
 .grid {
     display:grid;
     grid-template-columns:repeat(2,1fr);
     grid-template-rows:repeat(4,1fr);
-    gap:10px;
+    gap:12px;
     height:80%;
     width:100%;
 }
@@ -76,52 +64,56 @@ option {
     color: #fff;
     font-weight: bold;
     font-size: 22px;
-    border-radius: 15px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+    border-radius: 18px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.6);
     cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
     display:flex;
     align-items:center;
     justify-content:center;
 }
 .player:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px) scale(1.02);
     background: linear-gradient(135deg, #555, #777);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.7);
 }
 .reveal-box {
     background: linear-gradient(135deg, #333, #555);
-    border-radius:20px;
-    padding:40px;
-    font-size:28px;
+    border-radius:25px;
+    padding:50px;
+    font-size:32px;
     width:80%;
-    max-width:400px;
+    max-width:450px;
     display:flex;
     align-items:center;
     justify-content:center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    transition: transform 0.3s ease, background 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    transition: transform 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+    cursor:pointer;
 }
 .reveal-box.revealed {
-    transform: scale(1.05);
+    transform: scale(1.07);
     background: linear-gradient(135deg, #4caf50, #81c784);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.8);
 }
 .reveal-box.impostor {
-    transform: scale(1.05);
+    transform: scale(1.07);
     background: linear-gradient(135deg, #e53935, #ef5350);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.8);
 }
 </style>
 </head>
 <body>
 
 <div id="setup" class="screen active">
-<h1>Impostor Game</h1>
+<h1 style="font-size:3em; text-shadow:0 2px 6px rgba(0,0,0,0.7)">Impostor Game</h1>
 <select id="players"></select><br><br>
 <select id="impostors"></select><br><br>
 <button onclick="startGame()">Start Game</button>
 </div>
 
 <div id="game" class="screen">
-<h2>Select Player</h2>
+<h2 style="font-size:2em; text-shadow:0 2px 4px rgba(0,0,0,0.6)">Select Player</h2>
 <div id="grid" class="grid"></div>
 </div>
 
@@ -131,12 +123,12 @@ option {
 </div>
 
 <div id="waiting" class="screen">
-<h2>Game in progress...</h2>
+<h2 style="font-size:2em; text-shadow:0 2px 4px rgba(0,0,0,0.6)">Game in progress...</h2>
 <button onclick="endGame()">End Game</button>
 </div>
 
 <div id="end" class="screen">
-<h2 id="result"></h2>
+<h2 id="result" style="font-size:2em; text-shadow:0 2px 4px rgba(0,0,0,0.6)"></h2>
 <button onclick="location.reload()">Restart</button>
 </div>
 
