@@ -49,6 +49,7 @@ let wordsList=[];
 
 async function loadWords() {
     const res = await fetch('words.txt');
+    if(!res.ok) { alert('Failed to load words.txt'); return; }
     const text = await res.text();
     wordsList = text.split('\n').map(w => w.trim()).filter(w => w !== '');
 }
@@ -64,7 +65,7 @@ async function startGame() {
 
     if(wordsList.length===0) await loadWords();
 
-    word = getRandomWord();
+    word = getRandomWord(); // <-- Ensure this is now a string
 
     revealed=Array(totalPlayers).fill(false);
     players=Array(totalPlayers).fill("normal");
@@ -101,7 +102,7 @@ function selectPlayer(i) {
 function revealWord() {
     const role=players[currentPlayerIndex];
     const box=document.getElementById('revealBox');
-    box.innerText=role==='impostor'?'IMPOSTOR':word;
+    box.innerText=role==='impostor'? 'IMPOSTOR' : word;
     box.onclick=null;
     hasRevealed=true;
 }
