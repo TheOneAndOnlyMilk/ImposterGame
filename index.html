@@ -130,6 +130,14 @@ function nextPlayer() {
         setupGrid();
         showScreen('game');
     }
+}
+
+    if(revealed.every(v => v)) {
+        showScreen('waiting');
+    } else {
+        setupGrid();
+        showScreen('game');
+    }
 } else {
         setupGrid();
         showScreen('game');
