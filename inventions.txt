@@ -1,0 +1,106 @@
+Telephone
+Light bulb
+Printing press
+Automobile
+Airplane
+Computer
+Internet
+Radio
+Television
+Camera
+Microscope
+Telescope
+Refrigerator
+Microwave
+Vacuum cleaner
+Washing machine
+Sewing machine
+Clock
+Watch
+Compass
+Thermometer
+Stethoscope
+Electric fan
+Air conditioner
+Battery
+Pen
+Pencil
+Paper
+Eyeglasses
+Contact lenses
+Typewriter
+Calculator
+Smartphone
+Tablet
+Laptop
+Drone
+Electric guitar
+Piano
+Speaker
+Headphones
+Flashlight
+Matches
+Candle
+Fire extinguisher
+Smoke detector
+Door lock
+Key
+Umbrella
+Bicycle
+Motorcycle
+Train
+Subway
+Ship
+Rocket
+Satellite
+Balloon
+Parachute
+Helmet
+Gloves
+Safety glasses
+Life jacket
+Crutch
+Wheelchair
+Prosthetic limb
+Pacemaker
+Insulin pump
+Toothbrush
+Toothpaste
+Shampoo
+Soap
+Perfume
+Comb
+Hair dryer
+Iron
+Stove
+Oven
+Blender
+Coffee maker
+Toaster
+Mixer
+Water heater
+Air purifier
+Electric kettle
+Smoke alarm
+Gas mask
+Sprinkler
+Thermostat
+Elevator
+Escalator
+Skateboard
+Ski
+Snowboard
+Fishing rod
+Hammock
+Tent
+Sleeping bag
+Binoculars
+Magnifying glass
+Lantern
+Compass watch
+Fountain pen
+Chalk
+Eraser
+Glue
+Stapler
+Paper clip

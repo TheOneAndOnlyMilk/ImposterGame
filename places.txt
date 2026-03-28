@@ -1,0 +1,100 @@
+Airport
+Bank
+Beach
+Bookstore
+Bus stop
+Cafe
+Church
+City hall
+Cinema
+Clinic
+College
+Convenience store
+Courthouse
+Dentist
+Department store
+Fire station
+Gas station
+Grocery store
+Gym
+Hospital
+Hotel
+Library
+Market
+Museum
+Nightclub
+Park
+Pharmacy
+Playground
+Police station
+Post office
+Restaurant
+School
+Shopping mall
+Stadium
+Subway station
+Supermarket
+Swimming pool
+Taxi stand
+Temple
+Theater
+Train station
+University
+Zoo
+Art gallery
+Aquarium
+Barber shop
+Beauty salon
+Bicycle shop
+Book club
+Bowling alley
+Car rental
+Car wash
+Casino
+Castle
+Churchyard
+Community center
+Concert hall
+Courtyard
+Dance studio
+Dog park
+Factory
+Farmers market
+Fitness center
+Food court
+Gas station convenience store
+Golf course
+Harbor
+Ice rink
+Indoor playground
+Jail
+Juice bar
+Lake
+Marina
+Memorial
+Movie theater
+Music store
+Observatory
+Opera house
+Park bench
+Playground equipment
+Public restroom
+Race track
+Recycling center
+River
+Roadside diner
+Schoolyard
+Shopping plaza
+Skate park
+Ski resort
+Sports complex
+Street market
+Subway entrance
+Supercenter
+Town square
+Trail
+Train platform
+University campus
+Walking path
+Waterfall
+Winery
