@@ -90,6 +90,7 @@ option { background:#222; color:white; }
     box-shadow: 0 8px 20px rgba(0,0,0,0.6);
     transition: transform 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
     cursor:pointer;
+    min-height:100px;
 }
 .reveal-box.revealed {
     transform: scale(1.07);
@@ -185,7 +186,11 @@ function selectPlayer(i) {
     box.innerText = 'Tap to reveal';
     box.className = 'reveal-box';
     box.onclick = revealWord;
-    showScreen('reveal');
+
+    // Ensure the reveal screen is fully reset and visible
+    const revealScreen = document.getElementById('reveal');
+    revealScreen.style.display = 'flex';
+    requestAnimationFrame(()=> revealScreen.classList.add('active'));
 }
 
 function revealWord() {
