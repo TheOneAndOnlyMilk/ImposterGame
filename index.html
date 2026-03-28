@@ -61,9 +61,6 @@ async function startGame() {
     impostorCount = parseInt(document.getElementById('impostors').value);
 
     revealed = Array(totalPlayers).fill(false);
-    totalPlayers = parseInt(document.getElementById('players').value);
-    impostorCount = parseInt(document.getElementById('impostors').value);
-
     word = await fetchWord();
 
     players = Array(totalPlayers).fill("normal");
@@ -81,15 +78,16 @@ async function startGame() {
 function setupGrid() {
     const grid = document.getElementById('grid');
     grid.innerHTML = "";
+
     players.forEach((_, i) => {
-        if(revealed[i]) return;
+        if(revealed[i]) return; // hides already used players
+
         const div = document.createElement('div');
         div.className = 'player';
         div.innerText = 'Player ' + (i+1);
         div.onclick = () => selectPlayer(i);
         grid.appendChild(div);
     });
-});
 }
 
 function selectPlayer(i) {
@@ -114,18 +112,17 @@ function nextPlayer() {
         setupGrid();
         showScreen('game');
     }
-} else {
-        showScreen('game');
-    }
 }
 
 function endGame() {
     let impostors = [];
     players.forEach((p,i) => {
-        if(p.startsWith('impostor')) impostors.push('Player ' + (i+1));
+        if(p === 'impostor') impostors.push('Player ' + (i+1));
     });
+
     document.getElementById('result').innerText =
         'Impostor(s): ' + impostors.join(', ') + '\nWord: ' + word;
+
     showScreen('end');
 }
 
@@ -133,6 +130,7 @@ function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
+
 // Initialize dropdowns
 function initDropdowns() {
     const playerSelect = document.getElementById('players');
