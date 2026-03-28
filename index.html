@@ -60,6 +60,7 @@ let revealed = [];
 let players = [];
 let word = "";
 let currentPlayerIndex = null;
+let hasRevealed = false;
 
 async function fetchWord() {
     const res = await fetch('words.txt');
@@ -104,6 +105,7 @@ function setupGrid() {
 
 function selectPlayer(i) {
     currentPlayerIndex = i;
+    hasRevealed = false;
     document.getElementById('revealBox').innerText = 'Tap to reveal';
     document.getElementById('revealBox').onclick = revealWord;
     showScreen('reveal');
@@ -113,14 +115,22 @@ function revealWord() {
     const role = players[currentPlayerIndex];
     document.getElementById('revealBox').innerText = role === 'impostor' ? 'IMPOSTOR' : word;
     document.getElementById('revealBox').onclick = null;
+    hasRevealed = true;
 }
 
 function nextPlayer() {
-    revealed[currentPlayerIndex] = true;
+    // Only mark as revealed if the word was actually shown
+    if(hasRevealed) {
+        revealed[currentPlayerIndex] = true;
+    }
 
     if(revealed.every(v => v)) {
         showScreen('waiting');
     } else {
+        setupGrid();
+        showScreen('game');
+    }
+} else {
         setupGrid();
         showScreen('game');
     }
