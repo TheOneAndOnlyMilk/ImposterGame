@@ -45,17 +45,17 @@ let players=[];
 let word="";
 let currentPlayerIndex=null;
 let hasRevealed=false;
-
-let wordsList=[]; // Store fetched words
+let wordsList=[];
 
 async function loadWords() {
     const res = await fetch('words.txt');
     const text = await res.text();
-    wordsList = text.split('\n').filter(w=>w.trim()!=="");
+    wordsList = text.split('\n').map(w => w.trim()).filter(w => w !== '');
 }
 
 function getRandomWord() {
-    return wordsList[Math.floor(Math.random()*wordsList.length)];
+    if(wordsList.length===0) return "No words";
+    return wordsList[Math.floor(Math.random() * wordsList.length)];
 }
 
 async function startGame() {
@@ -63,6 +63,7 @@ async function startGame() {
     impostorCount=parseInt(document.getElementById('impostors').value);
 
     if(wordsList.length===0) await loadWords();
+
     word = getRandomWord();
 
     revealed=Array(totalPlayers).fill(false);
@@ -93,11 +94,8 @@ function selectPlayer(i) {
     hasRevealed=false;
     const box=document.getElementById('revealBox');
     box.innerText='Tap to reveal';
-    box.className='reveal-box';
-    box.style.opacity=0;
     box.onclick=revealWord;
     showScreen('reveal');
-    requestAnimationFrame(()=>{box.style.opacity=1;});
 }
 
 function revealWord() {
@@ -106,7 +104,6 @@ function revealWord() {
     box.innerText=role==='impostor'?'IMPOSTOR':word;
     box.onclick=null;
     hasRevealed=true;
-    box.classList.add(role==='impostor'?'impostor':'revealed');
 }
 
 function nextPlayer() {
@@ -124,9 +121,7 @@ function endGame() {
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    const screen=document.getElementById(id);
-    screen.style.display='flex';
-    requestAnimationFrame(()=>screen.classList.add('active'));
+    document.getElementById(id).classList.add('active');
 }
 
 function initDropdowns() {
