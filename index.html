@@ -17,8 +17,8 @@ button { padding:15px 20px; font-size:18px; border:none; border-radius:10px; }
 
 <div id="setup" class="screen active">
 <h1>Impostor Game</h1>
-<input id="players" type="number" placeholder="Players" /><br><br>
-<input id="impostors" type="number" placeholder="Impostors" /><br><br>
+<select id="players"></select><br><br>
+<select id="impostors"></select><br><br>
 <button onclick="startGame()">Start Game</button>
 </div>
 
@@ -44,6 +44,7 @@ button { padding:15px 20px; font-size:18px; border:none; border-radius:10px; }
 
 <script>
 let totalPlayers, impostorCount;
+let revealed = [];
 let players = [];
 let word = "";
 let currentPlayerIndex = null;
@@ -56,6 +57,10 @@ async function fetchWord() {
 }
 
 async function startGame() {
+    totalPlayers = parseInt(document.getElementById('players').value);
+    impostorCount = parseInt(document.getElementById('impostors').value);
+
+    revealed = Array(totalPlayers).fill(false);
     totalPlayers = parseInt(document.getElementById('players').value);
     impostorCount = parseInt(document.getElementById('impostors').value);
 
@@ -77,12 +82,14 @@ function setupGrid() {
     const grid = document.getElementById('grid');
     grid.innerHTML = "";
     players.forEach((_, i) => {
+        if(revealed[i]) return;
         const div = document.createElement('div');
         div.className = 'player';
         div.innerText = 'Player ' + (i+1);
         div.onclick = () => selectPlayer(i);
         grid.appendChild(div);
     });
+});
 }
 
 function selectPlayer(i) {
@@ -99,11 +106,15 @@ function revealWord() {
 }
 
 function nextPlayer() {
-    players[currentPlayerIndex] = players[currentPlayerIndex] + '_seen';
+    revealed[currentPlayerIndex] = true;
 
-    if(players.every(p => p.includes('_seen'))) {
+    if(revealed.every(v => v)) {
         showScreen('waiting');
     } else {
+        setupGrid();
+        showScreen('game');
+    }
+} else {
         showScreen('game');
     }
 }
@@ -122,7 +133,40 @@ function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
+// Initialize dropdowns
+function initDropdowns() {
+    const playerSelect = document.getElementById('players');
+    const impostorSelect = document.getElementById('impostors');
+
+    for(let i=3;i<=9;i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.text = i + ' Players';
+        playerSelect.appendChild(opt);
+    }
+
+    playerSelect.onchange = () => {
+        const val = parseInt(playerSelect.value);
+        impostorSelect.innerHTML = '';
+
+        let maxImpostors = Math.floor(val / 3);
+        if(maxImpostors < 1) maxImpostors = 1;
+
+        for(let i=1;i<=maxImpostors;i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.text = i + ' Impostor' + (i>1?'s':'');
+            impostorSelect.appendChild(opt);
+        }
+    };
+
+    playerSelect.value = 3;
+    playerSelect.onchange();
+}
+
+initDropdowns();
 </script>
 
 </body>
 </html>
+
