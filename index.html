@@ -4,117 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Impostor Game</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {
-    margin:0;
-    font-family: 'Roboto', sans-serif;
-    color:white;
-    text-align:center;
-    overflow:hidden;
-    background: linear-gradient(-45deg, #1a1a1a, #222, #111, #333);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-}
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-.screen {
-    display:none;
-    height:100vh;
-    padding:20px;
-    box-sizing:border-box;
-    opacity:0;
-    transition: opacity 0.5s ease;
-}
-.screen.active {
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    opacity:1;
-}
-button {
-    padding:15px 20px;
-    font-size:18px;
-    border:none;
-    border-radius:12px;
-    margin-top:20px;
-    cursor:pointer;
-    background: linear-gradient(135deg,#4caf50,#81c784);
-    color:white;
-    font-weight:bold;
-    transition: background 0.3s ease, transform 0.2s ease;
-}
-button:hover { background: linear-gradient(135deg,#45a049,#66bb6a); transform: translateY(-2px); }
+body { margin:0; font-family:Arial; background:#111; color:white; text-align:center; overflow:hidden; }
+.screen { display:none; height:100vh; padding:20px; box-sizing:border-box; }
+.active { display:flex; flex-direction:column; justify-content:center; align-items:center; }
+button { padding:15px 20px; font-size:18px; border:none; border-radius:10px; margin-top:20px; }
+.grid { display:grid; grid-template-columns:repeat(2,1fr); grid-template-rows:repeat(4,1fr); gap:10px; height:80%; width:100%; }
+.player { background:#222; display:flex; align-items:center; justify-content:center; font-size:20px; border-radius:10px; }
+.reveal-box { background:#222; border-radius:15px; padding:40px; font-size:28px; width:80%; max-width:400px; display:flex; align-items:center; justify-content:center; }
 select { padding:12px 15px; font-size:18px; border-radius:10px; min-width:200px; background:#222; color:white; }
 option { background:#222; color:white; }
-.grid {
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    grid-template-rows:repeat(4,1fr);
-    gap:12px;
-    height:80%;
-    width:100%;
-}
-.player {
-    background: linear-gradient(135deg, #222, #333);
-    color: #fff;
-    font-weight: bold;
-    font-size: 22px;
-    border-radius: 18px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.6);
-    cursor: pointer;
-    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
-}
-.player::after {
-    content:'';
-    position:absolute;
-    top:0; left:0; width:100%; height:100%;
-    border-radius:18px;
-    box-shadow:0 0 0 rgba(255,255,255,0);
-    transition: box-shadow 0.3s ease;
-}
-.player:hover::after { box-shadow:0 0 20px rgba(255,255,255,0.2); }
-.player:hover { transform: translateY(-5px) scale(1.03); background: linear-gradient(135deg,#555,#777); }
-.reveal-box {
-    background: linear-gradient(135deg, #333, #555);
-    border-radius:25px;
-    padding:50px;
-    font-size:32px;
-    width:80%;
-    max-width:450px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-    transition: transform 0.4s ease, background 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
-    cursor:pointer;
-    min-height:100px;
-    opacity:0;
-}
-.reveal-box.revealed, .reveal-box.impostor { opacity:1; transform: scale(1.08); box-shadow: 0 14px 28px rgba(0,0,0,0.85); }
-.reveal-box.revealed { background: linear-gradient(135deg, #4caf50, #81c784); }
-.reveal-box.impostor { background: linear-gradient(135deg, #e53935, #ef5350); }
 </style>
 </head>
 <body>
 
 <div id="setup" class="screen active">
-<h1 style="font-size:3em; text-shadow:0 2px 6px rgba(0,0,0,0.7)">Impostor Game</h1>
+<h1>Impostor Game</h1>
 <select id="players"></select><br><br>
 <select id="impostors"></select><br><br>
 <button onclick="startGame()">Start Game</button>
 </div>
 
 <div id="game" class="screen">
-<h2 style="font-size:2em; text-shadow:0 2px 4px rgba(0,0,0,0.6)">Select Player</h2>
+<h2>Select Player</h2>
 <div id="grid" class="grid"></div>
 </div>
 
@@ -124,12 +36,12 @@ option { background:#222; color:white; }
 </div>
 
 <div id="waiting" class="screen">
-<h2 style="font-size:2em; text-shadow:0 2px 4px rgba(0,0,0,0.6)">Game in progress...</h2>
+<h2>Game in progress...</h2>
 <button onclick="endGame()">End Game</button>
 </div>
 
 <div id="end" class="screen">
-<h2 id="result" style="font-size:2em; text-shadow:0 2px 4px rgba(0,0,0,0.6)"></h2>
+<h2 id="result"></h2>
 <button onclick="location.reload()">Restart</button>
 </div>
 
@@ -148,14 +60,15 @@ async function fetchWord() {
     return words[Math.floor(Math.random()*words.length)];
 }
 
-async function startGame() {
+function startGame() {
     totalPlayers = parseInt(document.getElementById('players').value);
     impostorCount = parseInt(document.getElementById('impostors').value);
 
     revealed = Array(totalPlayers).fill(false);
-    word = await fetchWord();
+    word = fetchWord();
 
     players = Array(totalPlayers).fill("normal");
+
     let chosen = new Set();
     while(chosen.size < impostorCount) {
         chosen.add(Math.floor(Math.random()*totalPlayers));
@@ -169,6 +82,7 @@ async function startGame() {
 function setupGrid() {
     const grid = document.getElementById('grid');
     grid.innerHTML = "";
+
     players.forEach((_, i) => {
         if(revealed[i]) return;
         const div = document.createElement('div');
@@ -182,56 +96,70 @@ function setupGrid() {
 function selectPlayer(i) {
     currentPlayerIndex = i;
     hasRevealed = false;
-    const box = document.getElementById('revealBox');
-    box.innerText = 'Tap to reveal';
-    box.className = 'reveal-box';
-    box.style.opacity = 0;
-    box.onclick = revealWord;
+    document.getElementById('revealBox').innerText = 'Tap to reveal';
+    document.getElementById('revealBox').onclick = revealWord;
     showScreen('reveal');
-    requestAnimationFrame(()=>{ box.style.opacity=1; }); // fade in box
 }
 
 function revealWord() {
     const role = players[currentPlayerIndex];
-    const box = document.getElementById('revealBox');
-    box.innerText = role==='impostor'?'IMPOSTOR':word;
-    box.onclick=null;
-    hasRevealed=true;
-    box.classList.add(role==='impostor'?'impostor':'revealed');
+    document.getElementById('revealBox').innerText = role === 'impostor' ? 'IMPOSTOR' : word;
+    document.getElementById('revealBox').onclick = null;
+    hasRevealed = true;
 }
 
 function nextPlayer() {
-    if(hasRevealed) revealed[currentPlayerIndex]=true;
-    if(revealed.every(v=>v)) showScreen('waiting');
-    else { setupGrid(); showScreen('game'); }
+    if(hasRevealed) {
+        revealed[currentPlayerIndex] = true;
+    }
+
+    if(revealed.every(v => v)) {
+        showScreen('waiting');
+    } else {
+        setupGrid();
+        showScreen('game');
+    }
 }
 
 function endGame() {
-    let impostors=[];
-    players.forEach((p,i)=>{if(p==='impostor') impostors.push('Player '+(i+1));});
-    document.getElementById('result').innerText='Impostor(s): '+impostors.join(',')+'\nWord: '+word;
+    let impostors = [];
+    players.forEach((p,i) => {
+        if(p === 'impostor') impostors.push('Player ' + (i+1));
+    });
+
+    document.getElementById('result').innerText = 'Impostor(s): ' + impostors.join(', ') + '\nWord: ' + word;
     showScreen('end');
 }
 
 function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    const screen=document.getElementById(id);
-    screen.style.display='flex';
-    requestAnimationFrame(()=>screen.classList.add('active')); // fade in screen
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 
 function initDropdowns() {
-    const playerSelect=document.getElementById('players');
-    const impostorSelect=document.getElementById('impostors');
-    for(let i=3;i<=9;i++) playerSelect.add(new Option(i+' Players',i));
-    playerSelect.addEventListener('change',()=>{
-        const val=parseInt(playerSelect.value);
-        impostorSelect.innerHTML='';
-        let maxImpostors=Math.floor(val/3); if(maxImpostors<1) maxImpostors=1;
-        for(let i=1;i<=maxImpostors;i++) impostorSelect.add(new Option(i+' Impostor'+(i>1?'s':''),i));
+    const playerSelect = document.getElementById('players');
+    const impostorSelect = document.getElementById('impostors');
+
+    for(let i=3;i<=9;i++) {
+        const opt = new Option(i + ' Players', i);
+        playerSelect.add(opt);
+    }
+
+    playerSelect.addEventListener('change', () => {
+        const val = parseInt(playerSelect.value);
+        impostorSelect.innerHTML = '';
+
+        let maxImpostors = Math.floor(val / 3);
+        if(maxImpostors < 1) maxImpostors = 1;
+
+        for(let i=1;i<=maxImpostors;i++) {
+            const opt = new Option(i + ' Impostor' + (i>1?'s':''), i);
+            impostorSelect.add(opt);
+        }
     });
 }
-document.addEventListener('DOMContentLoaded',initDropdowns);
+
+document.addEventListener('DOMContentLoaded', initDropdowns);
 </script>
 
 </body>
