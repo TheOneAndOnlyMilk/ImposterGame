@@ -185,9 +185,10 @@ function selectPlayer(i) {
     const box = document.getElementById('revealBox');
     box.innerText = 'Tap to reveal';
     box.className = 'reveal-box';
-    box.style.opacity=0;
+    box.style.opacity = 0;
     box.onclick = revealWord;
     showScreen('reveal');
+    requestAnimationFrame(()=>{ box.style.opacity=1; }); // fade in box
 }
 
 function revealWord() {
@@ -216,7 +217,7 @@ function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     const screen=document.getElementById(id);
     screen.style.display='flex';
-    requestAnimationFrame(()=>screen.classList.add('active'));
+    requestAnimationFrame(()=>screen.classList.add('active')); // fade in screen
 }
 
 function initDropdowns() {
