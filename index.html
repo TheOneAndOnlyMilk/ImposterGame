@@ -60,12 +60,12 @@ async function fetchWord() {
     return words[Math.floor(Math.random()*words.length)];
 }
 
-function startGame() {
+async function startGame() {
     totalPlayers = parseInt(document.getElementById('players').value);
     impostorCount = parseInt(document.getElementById('impostors').value);
 
     revealed = Array(totalPlayers).fill(false);
-    word = fetchWord();
+    word = await fetchWord(); // await here to get the actual string
 
     players = Array(totalPlayers).fill("normal");
 
