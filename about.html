@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About - Impostor Game</title>
 
+<style>
+body {
+    margin:0;
+    font-family:Arial;
+    background:#111;
+    color:white;
+    text-align:center;
+    overflow-x:hidden;
+}
+
+.container {
+    max-width:700px;
+    margin:auto;
+    padding:40px 20px 100px 20px;
+    animation: fadeIn 0.6s ease;
+}
+
+h1 {
+    margin-bottom:20px;
+}
+
+p {
+    line-height:1.6;
+    color:#ccc;
+}
+
+.back-btn {
+    display:inline-block;
+    margin-top:30px;
+    padding:12px 18px;
+    background:#222;
+    border-radius:10px;
+    text-decoration:none;
+    color:white;
+    transition:0.2s;
+}
+
+.back-btn:hover {
+    background:#444;
+    transform:scale(1.05);
+}
+
+/* Footer (same style as main page) */
+.footer {
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    padding:10px 0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(5px);
+}
+
+.footer a {
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+    padding:8px 12px;
+    border-radius:8px;
+    transition:background 0.2s ease;
+}
+
+.footer a:hover {
+    background:#333;
+}
+
+@media (max-width:600px) {
+    .footer { gap:10px; }
+    .footer a { font-size:12px; padding:6px 10px; }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>About</h1>
+
+    <p>
+        This is a social party game where players try to identify the impostor.
+    </p>
+
+    <p>
+        Each round, most players receive the same word, while one or more players are impostors and do not know the word.
+    </p>
+
+    <p>
+        Players take turns saying related words or hints to prove they know the secret word—without making it too obvious.
+    </p>
+
+    <p>
+        The impostor must listen carefully, adapt, and blend in without ever knowing the actual word.
+    </p>
+
+    <p>
+        After discussion, players try to vote out the impostor.
+    </p>
+
+    <a href="index.html" class="back-btn">Back to Game</a>
+</div>
+
+<div class="footer">
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a>
+</div>
+
+</body>
+</html>
