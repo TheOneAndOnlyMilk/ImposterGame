@@ -6,18 +6,22 @@
 <title>Impostor Game</title>
 <style>
 body { margin:0; font-family:Arial; background:#111; color:white; text-align:center; overflow:hidden; }
-.screen { display:none; height:100vh; padding:20px; box-sizing:border-box; opacity:0; transition: opacity 0.5s ease; }
-.active { display:flex; flex-direction:column; justify-content:center; align-items:center; opacity:1; }
-button { padding:15px 20px; font-size:18px; border:none; border-radius:10px; margin-top:20px; cursor:pointer; }
+.screen { display:none; height:100vh; padding:20px; box-sizing:border-box; opacity:0; transition: opacity 0.5s ease, transform 0.5s ease; transform: translateY(20px); }
+.active { display:flex; flex-direction:column; justify-content:center; align-items:center; opacity:1; transform: translateY(0); }
+button { padding:15px 20px; font-size:18px; border:none; border-radius:10px; margin-top:20px; cursor:pointer; transition: transform 0.2s ease, background 0.2s ease; }
+button:hover { background:#444; transform: scale(1.05); }
 .grid { display:grid; grid-template-columns:repeat(2,1fr); grid-template-rows:repeat(4,1fr); gap:10px; height:80%; width:100%; }
-.player { background:#222; display:flex; align-items:center; justify-content:center; font-size:20px; border-radius:10px; cursor:pointer; transition: background 0.2s ease; }
-.player:hover { background:#444; }
-.reveal-box { background:#222; border-radius:15px; padding:40px; font-size:28px; width:80%; max-width:400px; display:flex; align-items:center; justify-content:center; cursor:pointer; text-align:center; transition: transform 0.2s ease; }
+.player { background:#222; display:flex; align-items:center; justify-content:center; font-size:20px; border-radius:10px; cursor:pointer; transition: background 0.3s ease, transform 0.2s ease; }
+.player:hover { background:#444; transform: scale(1.05); }
+.reveal-box { background:#222; border-radius:15px; padding:40px; font-size:28px; width:80%; max-width:400px; display:flex; align-items:center; justify-content:center; cursor:pointer; text-align:center; transition: transform 0.2s ease, opacity 0.3s ease; opacity:0; }
+.reveal-box.show { opacity:1; }
 .reveal-box:active { transform: scale(0.95); }
-select { padding:12px 15px; font-size:18px; border-radius:10px; min-width:200px; background:#222; color:white; }
+select { padding:12px 15px; font-size:18px; border-radius:10px; min-width:200px; background:#222; color:white; transition: transform 0.2s ease; }
+select:hover { transform: scale(1.05); }
 option { background:#222; color:white; }
 .checkbox-container { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:10px; }
-.checkbox-container label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+.checkbox-container label { display:flex; align-items:center; gap:5px; cursor:pointer; transition: color 0.2s ease; }
+.checkbox-container label:hover { color:#aaa; }
 </style>
 </head>
 <body>
@@ -60,7 +64,6 @@ let categoryName = "";
 let currentPlayerIndex = null;
 let hasRevealed = false;
 let showCategory = false;
-
 const categoryFiles = {
     'Animals': 'animals.txt',
     'Foods': 'foods.txt',
@@ -82,10 +85,7 @@ async function fetchWord() {
     const res = await fetch(file);
     const text = await res.text();
     const words = text.split('\n').filter(w => w.trim() !== "");
-    return {
-        word: words[Math.floor(Math.random() * words.length)],
-        category: chosen
-    };
+    return { word: words[Math.floor(Math.random() * words.length)], category: chosen };
 }
 
 async function startGame() {
@@ -94,16 +94,13 @@ async function startGame() {
     showCategory = document.getElementById('showCategory').checked;
 
     revealed = Array(totalPlayers).fill(false);
-
     const result = await fetchWord();
     word = result.word;
     categoryName = result.category;
 
     players = Array(totalPlayers).fill("normal");
     let chosen = new Set();
-    while(chosen.size < impostorCount) {
-        chosen.add(Math.floor(Math.random()*totalPlayers));
-    }
+    while(chosen.size < impostorCount) chosen.add(Math.floor(Math.random()*totalPlayers));
     chosen.forEach(i => players[i] = "impostor");
 
     setupGrid();
@@ -126,9 +123,12 @@ function setupGrid() {
 function selectPlayer(i) {
     currentPlayerIndex = i;
     hasRevealed = false;
-    document.getElementById('revealBox').innerText = 'Tap to reveal';
-    document.getElementById('revealBox').onclick = revealWord;
+    const box = document.getElementById('revealBox');
+    box.classList.remove('show');
+    box.innerText = 'Tap to reveal';
+    box.onclick = revealWord;
     showScreen('reveal');
+    setTimeout(() => box.classList.add('show'), 50);
 }
 
 function revealWord() {
@@ -136,19 +136,16 @@ function revealWord() {
     let text = '';
     if(showCategory) text += 'Category: ' + categoryName + '\n\n';
     text += (role === 'impostor') ? 'IMPOSTOR' : word;
-    document.getElementById('revealBox').innerText = text;
-    document.getElementById('revealBox').onclick = null;
+    const box = document.getElementById('revealBox');
+    box.innerText = text;
+    box.onclick = null;
     hasRevealed = true;
 }
 
 function nextPlayer() {
     if(hasRevealed) revealed[currentPlayerIndex] = true;
-    if(revealed.every(v => v)) {
-        showScreen('waiting');
-    } else {
-        setupGrid();
-        showScreen('game');
-    }
+    if(revealed.every(v => v)) showScreen('waiting');
+    else { setupGrid(); showScreen('game'); }
 }
 
 function endGame() {
@@ -163,7 +160,8 @@ function showScreen(id) {
     const screen = document.getElementById(id);
     screen.classList.add('active');
     screen.style.opacity = 0;
-    setTimeout(() => { screen.style.opacity = 1; }, 50);
+    screen.style.transform = 'translateY(20px)';
+    setTimeout(() => { screen.style.opacity = 1; screen.style.transform = 'translateY(0)'; }, 50);
 }
 
 function initDropdowns() {
