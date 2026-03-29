@@ -6,32 +6,22 @@
 <title>Impostor Game</title>
 <style>
 body { margin:0; font-family:Arial; background:#111; color:white; text-align:center; overflow:hidden; }
-.screen { padding-bottom:80px; display:none; height:100vh; padding:20px; padding-bottom:100px; box-sizing:border-box; opacity:0; transition: opacity 0.5s ease, transform 0.5s ease; transform: translateY(20px); }
-.active { display:flex; flex-direction:column; justify-content:center; align-items:center; opacity:1; transform: translateY(0); }
-button { padding:15px 20px; font-size:18px; border:none; border-radius:10px; margin-top:20px; cursor:pointer; transition: transform 0.2s ease, background 0.2s ease; }
-button:hover { background:#444; transform: scale(1.05); }
+.screen { display:none; height:100vh; padding:20px; box-sizing:border-box; opacity:0; transition: opacity 0.5s ease; }
+.active { display:flex; flex-direction:column; justify-content:center; align-items:center; opacity:1; }
+button { padding:15px 20px; font-size:18px; border:none; border-radius:10px; margin-top:20px; cursor:pointer; }
 .grid { display:grid; grid-template-columns:repeat(2,1fr); grid-template-rows:repeat(4,1fr); gap:10px; height:80%; width:100%; }
-.player { background:#222; display:flex; align-items:center; justify-content:center; font-size:20px; border-radius:10px; cursor:pointer; transition: background 0.3s ease, transform 0.2s ease; }
-.player:hover { background:#444; transform: scale(1.05); }
-.reveal-box { background:#222; border-radius:15px; padding:40px; font-size:28px; width:80%; max-width:400px; display:flex; align-items:center; justify-content:center; cursor:pointer; text-align:center; transition: transform 0.2s ease, opacity 0.3s ease, color 0.5s ease; opacity:0; }
-.reveal-box.show { opacity:1; }
-.reveal-box.impostor { color:red; }
+.player { background:#222; display:flex; align-items:center; justify-content:center; font-size:20px; border-radius:10px; cursor:pointer; transition: background 0.2s ease; }
+.player:hover { background:#444; }
+.reveal-box { background:#222; border-radius:15px; padding:40px; font-size:28px; width:80%; max-width:400px; display:flex; align-items:center; justify-content:center; cursor:pointer; text-align:center; transition: transform 0.2s ease; }
 .reveal-box:active { transform: scale(0.95); }
-select { padding:12px 15px; font-size:18px; border-radius:10px; min-width:200px; background:#222; color:white; transition: transform 0.2s ease; }
-select:hover { transform: scale(1.05); }
+select { padding:12px 15px; font-size:18px; border-radius:10px; min-width:200px; background:#222; color:white; }
 option { background:#222; color:white; }
 .checkbox-container { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:10px; }
-.checkbox-container label { display:flex; align-items:center; gap:5px; cursor:pointer; transition: color 0.2s ease; }
-.checkbox-container label:hover { color:#aaa; }
-
+.checkbox-container label { display:flex; align-items:center; gap:5px; cursor:pointer; }
 .footer { position:fixed; bottom:0; left:0; width:100%; display:flex; justify-content:center; gap:20px; padding:10px 0; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); }
 .footer a { color:white; text-decoration:none; font-size:14px; padding:8px 12px; border-radius:8px; transition:background 0.2s ease; }
 .footer a:hover { background:#333; }
-
-@media (max-width:600px) {
-  .footer { gap:10px; }
-  .footer a { font-size:12px; padding:6px 10px; }
-}
+@media (max-width:600px) { .footer { gap:10px; } .footer a { font-size:12px; padding:6px 10px; } }
 </style>
 </head>
 <body>
@@ -65,6 +55,12 @@ option { background:#222; color:white; }
 <button onclick="location.reload()">Restart</button>
 </div>
 
+<div class="footer">
+    <a href="/about/">About</a>
+    <a href="/contact/">Contact</a>
+    <a href="/privacy/">Privacy Policy</a>
+</div>
+
 <script>
 let totalPlayers, impostorCount;
 let revealed = [];
@@ -74,6 +70,7 @@ let categoryName = "";
 let currentPlayerIndex = null;
 let hasRevealed = false;
 let showCategory = false;
+
 const categoryFiles = {
     'Animals': 'animals.txt',
     'Foods': 'foods.txt',
@@ -95,7 +92,10 @@ async function fetchWord() {
     const res = await fetch(file);
     const text = await res.text();
     const words = text.split('\n').filter(w => w.trim() !== "");
-    return { word: words[Math.floor(Math.random() * words.length)], category: chosen };
+    return {
+        word: words[Math.floor(Math.random() * words.length)],
+        category: chosen
+    };
 }
 
 async function startGame() {
@@ -104,13 +104,16 @@ async function startGame() {
     showCategory = document.getElementById('showCategory').checked;
 
     revealed = Array(totalPlayers).fill(false);
+
     const result = await fetchWord();
     word = result.word;
     categoryName = result.category;
 
     players = Array(totalPlayers).fill("normal");
     let chosen = new Set();
-    while(chosen.size < impostorCount) chosen.add(Math.floor(Math.random()*totalPlayers));
+    while(chosen.size < impostorCount) {
+        chosen.add(Math.floor(Math.random()*totalPlayers));
+    }
     chosen.forEach(i => players[i] = "impostor");
 
     setupGrid();
@@ -133,36 +136,42 @@ function setupGrid() {
 function selectPlayer(i) {
     currentPlayerIndex = i;
     hasRevealed = false;
-    const box = document.getElementById('revealBox');
-    box.className = 'reveal-box';
-    box.classList.remove('show');
-    box.innerText = 'Tap to reveal';
-    box.onclick = revealWord;
+    document.getElementById('revealBox').innerText = 'Tap to reveal';
+    document.getElementById('revealBox').onclick = revealWord;
     showScreen('reveal');
-    setTimeout(() => box.classList.add('show'), 50);
 }
 
 function revealWord() {
     const role = players[currentPlayerIndex];
-    const box = document.getElementById('revealBox');
     let text = '';
     if(showCategory) text += 'Category: ' + categoryName + '\n\n';
-    text += (role === 'impostor') ? 'IMPOSTOR' : word;
     if(role === 'impostor') {
-        box.classList.add('impostor');
-        box.style.opacity = 0;
-        setTimeout(() => { box.innerText = text; box.style.transition = 'opacity 1s ease'; box.style.opacity = 1; }, 50);
+        document.getElementById('revealBox').style.color = 'red';
+        document.getElementById('revealBox').innerText = '';
+        let i = 0;
+        const impostorText = 'IMPOSTOR';
+        const box = document.getElementById('revealBox');
+        const interval = setInterval(()=>{
+            box.innerText += impostorText[i];
+            i++;
+            if(i>=impostorText.length) clearInterval(interval);
+        }, 200);
     } else {
-        box.innerText = text;
+        document.getElementById('revealBox').style.color = 'white';
+        document.getElementById('revealBox').innerText = text + word;
     }
-    box.onclick = null;
+    document.getElementById('revealBox').onclick = null;
     hasRevealed = true;
 }
 
 function nextPlayer() {
     if(hasRevealed) revealed[currentPlayerIndex] = true;
-    if(revealed.every(v => v)) showScreen('waiting');
-    else { setupGrid(); showScreen('game'); }
+    if(revealed.every(v => v)) {
+        showScreen('waiting');
+    } else {
+        setupGrid();
+        showScreen('game');
+    }
 }
 
 function endGame() {
@@ -177,17 +186,20 @@ function showScreen(id) {
     const screen = document.getElementById(id);
     screen.classList.add('active');
     screen.style.opacity = 0;
-    screen.style.transform = 'translateY(20px)';
-    setTimeout(() => { screen.style.opacity = 1; screen.style.transform = 'translateY(0)'; }, 50);
+    setTimeout(() => { screen.style.opacity = 1; }, 50);
 }
 
 function initDropdowns() {
     const playerSelect = document.getElementById('players');
     const impostorSelect = document.getElementById('impostors');
     for(let i=3;i<=9;i++) playerSelect.add(new Option(i + ' Players', i));
-    playerSelect.addEventListener('change', () => updateImpostors());
-    updateImpostors(); // initialize impostor dropdown correctly on load
-
+    playerSelect.addEventListener('change', () => {
+        const val = parseInt(playerSelect.value);
+        impostorSelect.innerHTML = '';
+        let maxImpostors = Math.floor(val / 3);
+        if(maxImpostors < 1) maxImpostors = 1;
+        for(let i=1;i<=maxImpostors;i++) impostorSelect.add(new Option(i + ' Impostor' + (i>1?'s':''), i));
+    });
     const catContainer = document.getElementById('categories');
     Object.keys(categoryFiles).forEach(cat => {
         const label = document.createElement('label');
@@ -200,23 +212,8 @@ function initDropdowns() {
     });
 }
 
-function updateImpostors() {
-    const playerSelect = document.getElementById('players');
-    const impostorSelect = document.getElementById('impostors');
-    const val = parseInt(playerSelect.value);
-    impostorSelect.innerHTML = '';
-    let maxImpostors = Math.floor(val / 3);
-    if(maxImpostors < 1) maxImpostors = 1;
-    for(let i=1;i<=maxImpostors;i++) impostorSelect.add(new Option(i + ' Impostor' + (i>1?'s':''), i));
-}
-
 document.addEventListener('DOMContentLoaded', initDropdowns);
 </script>
 
-<div class="footer">
-  <a href="about.html">About</a>
-  <a href="contact.html">Contact</a>
-  <a href="privacy.html">Privacy Policy</a>
-</div>
 </body>
 </html>
