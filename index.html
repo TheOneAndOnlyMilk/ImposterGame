@@ -176,13 +176,9 @@ function initDropdowns() {
     const playerSelect = document.getElementById('players');
     const impostorSelect = document.getElementById('impostors');
     for(let i=3;i<=9;i++) playerSelect.add(new Option(i + ' Players', i));
-    playerSelect.addEventListener('change', () => {
-        const val = parseInt(playerSelect.value);
-        impostorSelect.innerHTML = '';
-        let maxImpostors = Math.floor(val / 3);
-        if(maxImpostors < 1) maxImpostors = 1;
-        for(let i=1;i<=maxImpostors;i++) impostorSelect.add(new Option(i + ' Impostor' + (i>1?'s':''), i));
-    });
+    playerSelect.addEventListener('change', () => updateImpostors());
+    updateImpostors(); // initialize impostor dropdown correctly on load
+
     const catContainer = document.getElementById('categories');
     Object.keys(categoryFiles).forEach(cat => {
         const label = document.createElement('label');
@@ -193,6 +189,16 @@ function initDropdowns() {
         label.appendChild(document.createTextNode(cat));
         catContainer.appendChild(label);
     });
+}
+
+function updateImpostors() {
+    const playerSelect = document.getElementById('players');
+    const impostorSelect = document.getElementById('impostors');
+    const val = parseInt(playerSelect.value);
+    impostorSelect.innerHTML = '';
+    let maxImpostors = Math.floor(val / 3);
+    if(maxImpostors < 1) maxImpostors = 1;
+    for(let i=1;i<=maxImpostors;i++) impostorSelect.add(new Option(i + ' Impostor' + (i>1?'s':''), i));
 }
 
 document.addEventListener('DOMContentLoaded', initDropdowns);
